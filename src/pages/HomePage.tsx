@@ -14,9 +14,12 @@ export default function HomePage() {
       {/* Brand */}
       <header className="mb-10">
         <p className="text-xs font-bold tracking-widest text-zinc-400 uppercase mb-2">MIND DECODER</p>
-        <h1 className="text-4xl font-black text-zinc-900 tracking-tight leading-tight">
-          속마음을<br />초성으로 숨겨
-        </h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-4xl font-black text-zinc-900 tracking-tight leading-tight">
+            속마음을<br />초성으로 숨겨
+          </h1>
+          <img src="/brain.png" alt="brain" className="w-20 h-20" />
+        </div>
         <p className="mt-3 text-sm text-zinc-500">맞추면 사이 확인, 못 맞추면 관계 재고</p>
       </header>
 
