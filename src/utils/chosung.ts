@@ -117,12 +117,13 @@ export function disguiseText(text: string, mode: 'hard' | 'normal' | 'easy' = 'n
   const tokens = text.split(' ');
 
   if (mode === 'normal') {
-    // 힌트 후보: 한글 3글자 이상인 단어. 앞에서부터 최대 2개만 선정.
+    // 힌트 후보: 한글 2글자 이상인 단어. 앞에서부터 최대 3개만 선정.
+    // (1글자 단어는 초성만으로도 너무 쉽게 유추되므로 제외)
     const hintIndices = new Set<number>();
     for (let i = 0; i < tokens.length; i++) {
-      if (countHangul(tokens[i]) >= 3) {
+      if (countHangul(tokens[i]) >= 2) {
         hintIndices.add(i);
-        if (hintIndices.size >= 2) break;
+        if (hintIndices.size >= 3) break;
       }
     }
 
