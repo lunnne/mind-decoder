@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@theme {
+  --color-accent: #00FF85;
+  --font-sans: 'Pretendard', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
