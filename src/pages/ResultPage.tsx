@@ -22,6 +22,7 @@
  * 스크린샷에서 제일 먼저 눈에 띄고, 공유 욕구를 자극하는 핵심.
  */
 
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import Button from '../components/Button';
@@ -47,9 +48,20 @@ export default function ResultPage() {
   }
 
   const { original, guess, scorePercent, matchedCount, totalCount, exactMatch } = state;
+  const [shared, setShared] = useState(false);
 
   // 점수 구간에 따른 밈 메시지 — 공유 시 가장 먼저 읽히는 요소
   const memeMessage = getMemeResult(scorePercent);
+
+  async function handleShareResult() {
+    const text = `🧠 마음 해독기 결과\n${memeMessage}\n${scorePercent}점 (${matchedCount}/${totalCount}자)\n👉 https://mind-decoder.vercel.app`;
+    if (navigator.share) {
+      await navigator.share({ title: '마음 해독기 결과', text });
+    } else {
+      await navigator.clipboard.writeText(text);
+      setShared(true);
+    }
+  }
 
   return (
     <Layout>
@@ -108,6 +120,9 @@ export default function ResultPage() {
 
       {/* CTA — 바이럴 루프: 결과를 본 사람이 자기도 만들고 싶게 유도 */}
       <div className="space-y-3">
+        <Button onClick={handleShareResult} className="w-full py-4 text-base">
+          {shared ? '✅ 복사됐어요!' : '📤 결과 공유하기'}
+        </Button>
         <Button onClick={() => navigate('/create')} className="w-full py-4 text-base">
           나도 만들기 →
         </Button>
