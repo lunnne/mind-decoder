@@ -83,11 +83,11 @@ export default function CreatePage() {
     try {
       const id = await saveGame(trimmed);
       if (id) {
-        setShareUrl(`${window.location.origin}/game?id=${id}`);
+        setShareUrl(`${window.location.origin}/share.html?id=${id}`);
       } else {
         // Supabase 미연결 시 fallback
         const encoded = encodeGameData(trimmed);
-        setShareUrl(`${window.location.origin}/game?d=${encoded}`);
+        setShareUrl(`${window.location.origin}/share.html?d=${encoded}`);
       }
     } finally {
       setIsGenerating(false);
