@@ -28,6 +28,7 @@ import Layout from '../components/Layout';
 import Button from '../components/Button';
 import ProgressBar from '../components/ProgressBar';
 import { getMemeResult } from '../utils/memeResult';
+import { shareToKakao } from '../utils/kakaoShare';
 import type { ResultState } from '../types';
 
 export default function ResultPage() {
@@ -120,8 +121,20 @@ export default function ResultPage() {
 
       {/* CTA — 바이럴 루프: 결과를 본 사람이 자기도 만들고 싶게 유도 */}
       <div className="space-y-3">
+        <button
+          onClick={() => shareToKakao({
+            title: `마음 해독기 🧠 ${scorePercent}점!`,
+            description: memeMessage,
+            imageUrl: 'https://mind-decoder.vercel.app/canyoudecode.png',
+            linkUrl: 'https://mind-decoder.vercel.app',
+            buttonTitle: '나도 해보기',
+          })}
+          className="w-full py-4 rounded-2xl bg-[#FEE500] text-[#191919] font-black text-base"
+        >
+          카카오로 결과 공유하기
+        </button>
         <Button onClick={handleShareResult} className="w-full py-4 text-base">
-          {shared ? '✅ 복사됐어요!' : '📤 결과 공유하기'}
+          {shared ? '✅ 복사됐어요!' : '📤 다른 방법으로 공유'}
         </Button>
         <Button onClick={() => navigate('/create')} className="w-full py-4 text-base">
           나도 만들기 →
