@@ -8,6 +8,8 @@ interface KakaoStatic {
         title: string;
         description: string;
         imageUrl: string;
+        imageWidth?: number;
+        imageHeight?: number;
         link: { mobileWebUrl: string; webUrl: string };
       };
       buttons?: Array<{
