@@ -22,6 +22,8 @@ export function shareToKakao({
       title,
       description,
       imageUrl,
+      imageWidth: 1200,
+      imageHeight: 630,
       link: {
         mobileWebUrl: linkUrl,
         webUrl: linkUrl,

@@ -22,21 +22,73 @@
  * 스크린샷에서 제일 먼저 눈에 띄고, 공유 욕구를 자극하는 핵심.
  */
 
-import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Layout from '../components/Layout';
 import Button from '../components/Button';
 import ProgressBar from '../components/ProgressBar';
 import { getMemeResult } from '../utils/memeResult';
 import { shareToKakao } from '../utils/kakaoShare';
+import { supabase } from '../lib/supabase';
+import { compareAnswer } from '../utils/scoring';
 import type { ResultState } from '../types';
+
+const BASE_URL = 'https://mind-decoder.vercel.app';
 
 export default function ResultPage() {
   const location = useLocation();
   const navigate  = useNavigate();
-  const state = location.state as ResultState | null;
+  const { shareId: paramShareId } = useParams<{ shareId?: string }>();
 
-  // state 없이 직접 접근한 경우 — 홈으로 안내
+  const [state, setState] = useState<ResultState | null>(
+    location.state as ResultState | null
+  );
+  const [loading, setLoading] = useState(!location.state && !!paramShareId);
+
+  // state 없이 /result/:shareId 로 직접 접근한 경우 — Supabase에서 조회
+  useEffect(() => {
+    if (location.state || !paramShareId) return;
+
+    (async () => {
+      const { data, error } = await supabase
+        .from('submissions')
+        .select('submitted_text, score, puzzles(answer_text)')
+        .eq('share_id', paramShareId)
+        .single();
+
+      if (error || !data) {
+        setLoading(false);
+        return;
+      }
+
+      const puzzle = (data.puzzles as unknown as { answer_text: string } | null);
+      const original = puzzle?.answer_text ?? '';
+      const guess = data.submitted_text as string;
+      const result = compareAnswer(original, guess);
+
+      setState({
+        original,
+        guess,
+        scorePercent: data.score as number,
+        matchedCount: result.matchedCount,
+        totalCount: result.totalCount,
+        exactMatch: result.exactMatch,
+        shareId: paramShareId,
+      });
+      setLoading(false);
+    })();
+  }, [paramShareId]);
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="text-center mt-24">
+          <p className="text-zinc-400 text-sm">결과 불러오는 중...</p>
+        </div>
+      </Layout>
+    );
+  }
+
   if (!state) {
     return (
       <Layout>
@@ -49,13 +101,16 @@ export default function ResultPage() {
   }
 
   const { original, guess, scorePercent, matchedCount, totalCount, exactMatch } = state;
+  const shareId = state.shareId ?? paramShareId;
+  const resultUrl = shareId ? `${BASE_URL}/result/${shareId}` : BASE_URL;
+
   const [shared, setShared] = useState(false);
 
   // 점수 구간에 따른 밈 메시지 — 공유 시 가장 먼저 읽히는 요소
   const memeMessage = getMemeResult(scorePercent);
 
   async function handleShareResult() {
-    const text = `🧠 마음 해독기 결과\n${memeMessage}\n${scorePercent}점 (${matchedCount}/${totalCount}자)\n👉 https://mind-decoder.vercel.app`;
+    const text = `🧠 마음 해독기 결과\n${memeMessage}\n${scorePercent}점 (${matchedCount}/${totalCount}자)\n👉 ${resultUrl}`;
     if (navigator.share) {
       await navigator.share({ title: '마음 해독기 결과', text });
     } else {
@@ -125,9 +180,9 @@ export default function ResultPage() {
           onClick={() => shareToKakao({
             title: `마음 해독기 🧠 ${scorePercent}점!`,
             description: memeMessage,
-            imageUrl: 'https://mind-decoder.vercel.app/canyoudecode.png',
-            linkUrl: 'https://mind-decoder.vercel.app',
-            buttonTitle: '나도 해보기',
+            imageUrl: `${BASE_URL}/canyoudecode.png`,
+            linkUrl: resultUrl,
+            buttonTitle: '내 결과 보기',
           })}
           className="w-full py-4 rounded-2xl bg-[#FEE500] text-[#191919] font-black text-base"
         >
