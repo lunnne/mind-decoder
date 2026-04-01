@@ -23,9 +23,7 @@ import TextInput from '../components/TextInput';
 import { disguiseText } from '../utils/chosung';
 import { encodeGameData } from '../utils/encoding';
 import { handleShare, copyLink } from '../utils/share';
-import { supabase } from '../lib/supabase';
-import { ensureAnonymousSession } from '../lib/auth';
-import { createShareSlug } from '../lib/share';
+import { saveGame } from '../lib/supabase';
 import { shareToKakao } from '../utils/kakaoShare';
 
 // 입력창 placeholder — 마운트마다 랜덤으로 하나 선택
@@ -79,40 +77,19 @@ export default function CreatePage() {
   );
   const hasText = text.trim().length > 0;
 
-  // puzzles 테이블에 저장 후 /play/:slug URL 생성. 실패 시 base64 fallback.
+  // Supabase에 저장 후 UUID로 URL 생성. 실패 시 base64 방식으로 fallback.
   async function handleGenerate() {
     const trimmed = text.trim();
     setIsGenerating(true);
     try {
-      await ensureAnonymousSession();
-
-      const { data: { session } } = await supabase.auth.getSession();
-      const creatorUserId = session?.user.id;
-
-      if (creatorUserId) {
-        const shareSlug = createShareSlug();
-        const initials = disguiseText(trimmed, 'normal');
-
-        const { error } = await supabase.from('puzzles').insert({
-          creator_user_id: creatorUserId,
-          question_text: trimmed,
-          initials,
-          answer_text: trimmed,
-          share_slug: shareSlug,
-        });
-
-        if (!error) {
-          setShareUrl(`${window.location.origin}/play/${shareSlug}`);
-          setIsGenerating(false);
-          setCopied(false);
-          return;
-        }
-        console.error('[CreatePage] puzzles insert 실패:', error);
+      const id = await saveGame(trimmed);
+      if (id) {
+        setShareUrl(`${window.location.origin}/share.html?id=${id}`);
+      } else {
+        // Supabase 미연결 시 fallback
+        const encoded = encodeGameData(trimmed);
+        setShareUrl(`${window.location.origin}/share.html?d=${encoded}`);
       }
-
-      // fallback — Supabase 실패 시 base64
-      const encoded = encodeGameData(trimmed);
-      setShareUrl(`${window.location.origin}/share.html?d=${encoded}`);
     } finally {
       setIsGenerating(false);
       setCopied(false);
