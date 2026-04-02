@@ -15,7 +15,7 @@ const SHARE_CONFIGS: Record<ShareType, { title: string; description: string; ima
   },
 }
 
-export function shareToKakao(type: ShareType) {
+export function shareToKakao(type: ShareType, url?: string) {
   if (!window.Kakao) {
     alert('카카오 공유를 사용할 수 없어요.')
     return
@@ -26,7 +26,7 @@ export function shareToKakao(type: ShareType) {
   }
 
   const { title, description, imageUrl, buttonTitle } = SHARE_CONFIGS[type]
-  const currentUrl = window.location.href
+  const currentUrl = url ?? window.location.href
 
   window.Kakao.Share.sendDefault({
     objectType: 'feed',

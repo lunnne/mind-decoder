@@ -190,7 +190,7 @@ export default function CreatePage() {
 
           {/* 카카오 공유 */}
           <button
-            onClick={() => shareToKakao('challenge')}
+            onClick={() => shareToKakao('challenge', shareUrl)}
             className="w-full py-4 rounded-2xl bg-[#FEE500] text-[#191919] font-black text-base"
           >
             카카오로 공유하기

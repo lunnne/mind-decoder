@@ -176,7 +176,7 @@ export default function ResultPage() {
       {/* CTA — 바이럴 루프: 결과를 본 사람이 자기도 만들고 싶게 유도 */}
       <div className="space-y-3">
         <button
-          onClick={() => shareToKakao('challenge')}
+          onClick={() => shareToKakao('challenge', resultUrl)}
           className="w-full py-4 rounded-2xl bg-[#FEE500] text-[#191919] font-black text-base"
         >
           카카오로 결과 공유하기
