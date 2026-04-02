@@ -190,13 +190,7 @@ export default function CreatePage() {
 
           {/* 카카오 공유 */}
           <button
-            onClick={() => shareToKakao({
-              title: '🧠 초성 힌트를 해독해봐!',
-              description: '이 초성 맞추면 찐친 · 못 맞추면 흠..',
-              imageUrl: 'https://mind-decoder.vercel.app/canyoudecode.png',
-              linkUrl: shareUrl,
-              buttonTitle: '해독하러 가기',
-            })}
+            onClick={() => shareToKakao('challenge')}
             className="w-full py-4 rounded-2xl bg-[#FEE500] text-[#191919] font-black text-base"
           >
             카카오로 공유하기

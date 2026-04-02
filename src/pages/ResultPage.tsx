@@ -44,6 +44,7 @@ export default function ResultPage() {
     location.state as ResultState | null
   );
   const [loading, setLoading] = useState(!location.state && !!paramShareId);
+  const [shared, setShared] = useState(false);
 
   // state 없이 /result/:shareId 로 직접 접근한 경우 — Supabase에서 조회
   useEffect(() => {
@@ -77,7 +78,7 @@ export default function ResultPage() {
       });
       setLoading(false);
     })();
-  }, [paramShareId]);
+  }, [paramShareId, location.state]);
 
   if (loading) {
     return (
@@ -103,8 +104,6 @@ export default function ResultPage() {
   const { original, guess, scorePercent, matchedCount, totalCount, exactMatch } = state;
   const shareId = state.shareId ?? paramShareId;
   const resultUrl = shareId ? `${BASE_URL}/result/${shareId}` : BASE_URL;
-
-  const [shared, setShared] = useState(false);
 
   // 점수 구간에 따른 밈 메시지 — 공유 시 가장 먼저 읽히는 요소
   const memeMessage = getMemeResult(scorePercent);
@@ -177,13 +176,7 @@ export default function ResultPage() {
       {/* CTA — 바이럴 루프: 결과를 본 사람이 자기도 만들고 싶게 유도 */}
       <div className="space-y-3">
         <button
-          onClick={() => shareToKakao({
-            title: `마음 해독기 🧠 ${scorePercent}점!`,
-            description: memeMessage,
-            imageUrl: `${BASE_URL}/canyoudecode.png`,
-            linkUrl: resultUrl,
-            buttonTitle: '내 결과 보기',
-          })}
+          onClick={() => shareToKakao('challenge')}
           className="w-full py-4 rounded-2xl bg-[#FEE500] text-[#191919] font-black text-base"
         >
           카카오로 결과 공유하기
