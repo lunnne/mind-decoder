@@ -23,7 +23,7 @@ import ProgressBar from '../components/ProgressBar';
 import { decodeGameData } from '../utils/encoding';
 import { disguiseText } from '../utils/chosung';
 import { compareAnswer, getWordMatches } from '../utils/scoring';
-import { loadGame } from '../lib/supabase';
+import { loadGame, saveResult } from '../lib/supabase';
 import type { ResultState } from '../types';
 
 export default function GamePage() {
@@ -32,6 +32,7 @@ export default function GamePage() {
   const [guess, setGuess] = useState('');
   const [original, setOriginal] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // ?id= (Supabase) 우선, 없으면 ?d= (base64 fallback) 시도
   useEffect(() => {
@@ -84,10 +85,17 @@ export default function GamePage() {
   const wordMatches = getWordMatches(original!, guess);
   const hasGuess = guess.trim().length > 0;
 
-  // 최종 결과를 router state에 담아 ResultPage로 이동 — 서버 호출 없음
-  function handleSubmit() {
+  // 최종 결과를 Supabase에 저장 후 ResultPage로 이동
+  async function handleSubmit() {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     const result = compareAnswer(original!, guess);
-    const state: ResultState = { original: original!, guess, ...result };
+    const shareId = await saveResult({
+      original_text: original!,
+      submitted_text: guess,
+      score: result.scorePercent,
+    });
+    const state: ResultState = { original: original!, guess, ...result, shareId: shareId ?? undefined };
     navigate('/result', { state });
   }
 
@@ -161,10 +169,10 @@ export default function GamePage() {
 
       <Button
         onClick={handleSubmit}
-        disabled={!hasGuess}
+        disabled={!hasGuess || isSubmitting}
         className="w-full py-4 text-base"
       >
-        결과 보기 →
+        {isSubmitting ? '저장 중...' : '결과 보기 →'}
       </Button>
     </Layout>
   );

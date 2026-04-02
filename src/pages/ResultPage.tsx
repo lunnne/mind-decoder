@@ -29,7 +29,7 @@ import Button from '../components/Button';
 import ProgressBar from '../components/ProgressBar';
 import { getMemeResult } from '../utils/memeResult';
 import { shareToKakao } from '../utils/kakaoShare';
-import { supabase } from '../lib/supabase';
+import { loadResult } from '../lib/supabase';
 import { compareAnswer } from '../utils/scoring';
 import type { ResultState } from '../types';
 
@@ -51,26 +51,21 @@ export default function ResultPage() {
     if (location.state || !paramShareId) return;
 
     (async () => {
-      const { data, error } = await supabase
-        .from('submissions')
-        .select('submitted_text, score, puzzles(answer_text)')
-        .eq('share_id', paramShareId)
-        .single();
+      const data = await loadResult(paramShareId);
 
-      if (error || !data) {
+      if (!data) {
         setLoading(false);
         return;
       }
 
-      const puzzle = (data.puzzles as unknown as { answer_text: string } | null);
-      const original = puzzle?.answer_text ?? '';
-      const guess = data.submitted_text as string;
+      const original = data.original_text;
+      const guess = data.submitted_text;
       const result = compareAnswer(original, guess);
 
       setState({
         original,
         guess,
-        scorePercent: data.score as number,
+        scorePercent: data.score,
         matchedCount: result.matchedCount,
         totalCount: result.totalCount,
         exactMatch: result.exactMatch,
@@ -176,7 +171,10 @@ export default function ResultPage() {
       {/* CTA — 바이럴 루프: 결과를 본 사람이 자기도 만들고 싶게 유도 */}
       <div className="space-y-3">
         <button
-          onClick={() => shareToKakao('challenge', resultUrl)}
+          onClick={() => shareToKakao('result', resultUrl, {
+              title: `${scorePercent}점 달성! 🧠`,
+              description: `${memeMessage} — 너도 도전해봐!`,
+            })}
           className="w-full py-4 rounded-2xl bg-[#FEE500] text-[#191919] font-black text-base"
         >
           카카오로 결과 공유하기

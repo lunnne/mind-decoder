@@ -29,3 +29,31 @@ export async function loadGame(id: string): Promise<string | null> {
   if (error || !data) return null;
   return data.original as string;
 }
+
+export async function saveResult(payload: {
+  original_text: string;
+  submitted_text: string;
+  score: number;
+}): Promise<string | null> {
+  const { data, error } = await supabase
+    .from('results')
+    .insert(payload)
+    .select('id')
+    .single();
+  if (error || !data) return null;
+  return data.id as string;
+}
+
+export async function loadResult(id: string): Promise<{
+  original_text: string;
+  submitted_text: string;
+  score: number;
+} | null> {
+  const { data, error } = await supabase
+    .from('results')
+    .select('original_text, submitted_text, score')
+    .eq('id', id)
+    .single();
+  if (error || !data) return null;
+  return data as { original_text: string; submitted_text: string; score: number };
+}

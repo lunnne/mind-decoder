@@ -1,4 +1,9 @@
-type ShareType = 'create' | 'challenge'
+type ShareType = 'create' | 'challenge' | 'result'
+
+interface ShareOverrides {
+  title?: string
+  description?: string
+}
 
 const SHARE_CONFIGS: Record<ShareType, { title: string; description: string; imageUrl: string; buttonTitle: string }> = {
   create: {
@@ -13,9 +18,15 @@ const SHARE_CONFIGS: Record<ShareType, { title: string; description: string; ima
     imageUrl: 'https://mind-decoder.vercel.app/canyoudecode.png',
     buttonTitle: '도전하러 가기',
   },
+  result: {
+    title: '마음 해독 결과 공개 🧠',
+    description: '',
+    imageUrl: 'https://mind-decoder.vercel.app/canyoudecode.png',
+    buttonTitle: '결과 보러 가기',
+  },
 }
 
-export function shareToKakao(type: ShareType, url?: string) {
+export function shareToKakao(type: ShareType, url?: string, overrides?: ShareOverrides) {
   if (!window.Kakao) {
     alert('카카오 공유를 사용할 수 없어요.')
     return
@@ -25,7 +36,10 @@ export function shareToKakao(type: ShareType, url?: string) {
     window.Kakao.init(import.meta.env.VITE_KAKAO_JS_KEY)
   }
 
-  const { title, description, imageUrl, buttonTitle } = SHARE_CONFIGS[type]
+  const base = SHARE_CONFIGS[type]
+  const title = overrides?.title ?? base.title
+  const description = overrides?.description ?? base.description
+  const { imageUrl, buttonTitle } = base
   const currentUrl = url ?? window.location.href
 
   window.Kakao.Share.sendDefault({
