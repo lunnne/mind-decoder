@@ -5,25 +5,29 @@
   --font-sans: 'Pretendard', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-@keyframes neon-pulse {
-  0%, 100% {
-    box-shadow:
-      0 0 6px #00FF85,
-      0 0 20px #00FF85,
-      0 0 40px #00FF85;
-    opacity: 1;
-  }
-  50% {
-    box-shadow:
-      0 0 12px #00FF85,
-      0 0 40px #00FF85,
-      0 0 80px #00FF85;
-    opacity: 0.85;
-  }
+@keyframes shimmer-sweep {
+  0% { transform: translateX(-100%) skewX(-12deg); }
+  100% { transform: translateX(250%) skewX(-12deg); }
 }
 
-.neon-blink {
-  animation: neon-pulse 1.4s ease-in-out infinite;
+.shimmer-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.35),
+    transparent
+  );
+  transform: translateX(-100%) skewX(-12deg);
+  animation: shimmer-sweep 2.2s ease-in-out infinite;
 }
 
 * {

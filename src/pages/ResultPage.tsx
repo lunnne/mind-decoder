@@ -184,7 +184,7 @@ export default function ResultPage() {
         </Button>
         <button
           onClick={() => navigate('/create')}
-          className="neon-blink w-full py-4 rounded-2xl bg-[#00FF85] text-zinc-900 font-black text-base tracking-tight"
+          className="shimmer-btn w-full py-4 rounded-2xl bg-zinc-900 text-[#00FF85] font-black text-base border-2 border-[#00FF85]"
         >
           ✨ 나도 만들기 →
         </button>
