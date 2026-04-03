@@ -11,7 +11,7 @@ const MESSAGES: Record<string, { message: string; emoji: string }[]> = {
   perfect: [
     { message: '실화냐?? 텔레파시 맞지 진짜로', emoji: '🔮' },
     { message: '이거 넌 몰래카메라인가 ㄷㄷ', emoji: '📷' },
-    { message: '완벽함... 이 사람 내 머릿속 들었나', emoji: '🧠' },
+    { message: '완벽함... 이 사람 내 머릿속 들었나', emoji: '🙊' },
     { message: '대박.. 예언가 맞지 진심으로', emoji: '🌟' },
     { message: '인정함 넌 나 복제인간 아니냐', emoji: '👯' },
     { message: '신의 영역.. 그냥 신이다', emoji: '⚡' },
