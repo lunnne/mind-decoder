@@ -21,7 +21,7 @@ const SHARE_CONFIGS: Record<ShareType, { title: string; description: string; ima
   result: {
     title: '마음 해독 결과 공개 🧠',
     description: '',
-    imageUrl: 'https://mind-decoder.vercel.app/canyoudecode.png',
+    imageUrl: 'https://mind-decoder.vercel.app/quizsolved.png',
     buttonTitle: '결과 보러 가기',
   },
 }
