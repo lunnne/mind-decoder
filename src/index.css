@@ -5,6 +5,27 @@
   --font-sans: 'Pretendard', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
+@keyframes neon-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 6px #00FF85,
+      0 0 20px #00FF85,
+      0 0 40px #00FF85;
+    opacity: 1;
+  }
+  50% {
+    box-shadow:
+      0 0 12px #00FF85,
+      0 0 40px #00FF85,
+      0 0 80px #00FF85;
+    opacity: 0.85;
+  }
+}
+
+.neon-blink {
+  animation: neon-pulse 1.4s ease-in-out infinite;
+}
+
 * {
   box-sizing: border-box;
 }

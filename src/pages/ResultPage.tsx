@@ -182,9 +182,12 @@ export default function ResultPage() {
         <Button onClick={handleShareResult} className="w-full py-4 text-base">
           {shared ? '✅ 복사됐어요!' : '📤 다른 방법으로 공유'}
         </Button>
-        <Button onClick={() => navigate('/create')} className="w-full py-4 text-base">
-          나도 만들기 →
-        </Button>
+        <button
+          onClick={() => navigate('/create')}
+          className="neon-blink w-full py-4 rounded-2xl bg-[#00FF85] text-zinc-900 font-black text-base tracking-tight"
+        >
+          ✨ 나도 만들기 →
+        </button>
         <Button onClick={() => navigate('/')} variant="secondary" className="w-full py-3 text-sm">
           홈으로
         </Button>
