@@ -101,10 +101,10 @@ export default function ResultPage() {
   const resultUrl = shareId ? `${BASE_URL}/result/${shareId}` : BASE_URL;
 
   // 점수 구간에 따른 밈 메시지 — 공유 시 가장 먼저 읽히는 요소
-  const memeMessage = getMemeResult(scorePercent);
+  const { message: memeMessage, emoji: memeEmoji, animClass: memeAnimClass } = getMemeResult(scorePercent);
 
   async function handleShareResult() {
-    const text = `🧠 마음 해독기 결과\n${memeMessage}\n${scorePercent}점 (${matchedCount}/${totalCount}자)\n👉 ${resultUrl}`;
+    const text = `${memeEmoji} 마음 해독기 결과\n${memeMessage}\n${scorePercent}점 (${matchedCount}/${totalCount}자)\n👉 ${resultUrl}`;
     if (navigator.share) {
       await navigator.share({ title: '마음 해독기 결과', text });
     } else {
@@ -146,9 +146,10 @@ export default function ResultPage() {
         </div>
 
         {/* ── 밈 메시지 ────────────────────────────────────────── */}
-        {/* 가장 큰 텍스트 — 스크린샷의 훅(hook).
-            getMemeResult()가 점수 구간별로 다른 문구를 반환. */}
         <div className="px-5 py-8 text-center border-b border-zinc-100">
+          <span className={`text-5xl inline-block mb-4 ${memeAnimClass}`}>
+            {memeEmoji}
+          </span>
           <p className="text-2xl font-black text-zinc-900 leading-snug">
             {memeMessage}
           </p>
@@ -173,7 +174,7 @@ export default function ResultPage() {
         <button
           onClick={() => shareToKakao('result', resultUrl, {
               title: `${scorePercent}점 달성! 🧠`,
-              description: `${memeMessage} — 너도 도전해봐!`,
+              description: `${memeEmoji} ${memeMessage} — 너도 도전해봐!`,
             })}
           className="w-full py-4 rounded-2xl bg-[#FEE500] text-[#191919] font-black text-base"
         >

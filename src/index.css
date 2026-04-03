@@ -5,6 +5,39 @@
   --font-sans: 'Pretendard', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
+@keyframes emoji-bounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  30% { transform: translateY(-18px) scale(1.15); }
+  60% { transform: translateY(-8px) scale(1.05); }
+}
+@keyframes emoji-spin {
+  0% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(-15deg) scale(1.1); }
+  75% { transform: rotate(15deg) scale(1.1); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+@keyframes emoji-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes emoji-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px) rotate(-4deg); }
+  40% { transform: translateX(8px) rotate(4deg); }
+  60% { transform: translateX(-5px) rotate(-2deg); }
+  80% { transform: translateX(5px) rotate(2deg); }
+}
+@keyframes emoji-droop {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(6px) rotate(-8deg); }
+}
+
+.anim-bounce { animation: emoji-bounce 0.7s cubic-bezier(.36,.07,.19,.97) infinite; }
+.anim-spin   { animation: emoji-spin 1.2s ease-in-out infinite; }
+.anim-float  { animation: emoji-float 2s ease-in-out infinite; }
+.anim-shake  { animation: emoji-shake 0.6s ease-in-out infinite; }
+.anim-droop  { animation: emoji-droop 2s ease-in-out infinite; }
+
 @keyframes shimmer-sweep {
   0% { transform: translateX(-100%) skewX(-12deg); }
   100% { transform: translateX(250%) skewX(-12deg); }
